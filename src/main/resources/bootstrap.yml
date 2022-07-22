@@ -1,0 +1,93 @@
+server:
+  port: ${ACCESS_PORT:7619}
+spring:
+  project:
+    name: ${PROJECT_NAME:govern}
+  application:
+    name: govern-server-tool
+  profiles:
+    active: dev
+  cloud:
+    nacos:
+      config:
+        server-addr: api.nacos.net
+        encode: utf-8
+        group: DEFAULT_GROUP
+        file-extension: yml
+        prefix: ${spring.application.name}
+        namespace: ${NACOS_NAMESPACE:4672684d-ae96-485e-9d51-e4d128e6201e}
+      discovery:
+#        ip: api.server.net
+        ip: ${ACCESS_DOMAIN:192.168.1.198}
+        port: ${server.port}
+        server-addr: api.nacos.net
+        namespace: ${NACOS_NAMESPACE:4672684d-ae96-485e-9d51-e4d128e6201e}
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+#  activiti:
+#    database-schema-update: true
+#      #databaseSchemaUpdate配置项可以设置流程引擎启动和关闭时数据库执行的策略。 databaseSchemaUpdate有以下四个值：
+#      #false：false为默认值，设置为该值后，Activiti在启动时，会对比数据库表中保存的版本，如果没有表或者版本不匹配时，将在启动时抛出异常。
+#      #true：设置为该值后，Activiti会对数据库中所有的表进行更新，如果表不存在，则Activiti会自动创建。
+#    #create-drop：Activiti启动时，会执行数据库表的创建操作，在Activiti关闭时，执行数据库表的删除操作。
+#    #drop-create：Activiti启动时，执行数据库表的删除操作在Activiti关闭时，会执行数据库表的创建操作。
+#    # 开启历史库
+#    db-history-used: true
+#    #db-history-used为true表示使用历史表，如果不配置，则工程启动后可以检查数据库，只建立了17张表，历史表没有建立，则流程图及运行节点无法展示
+#    history-level: audit
+#    #默认true，开启异步监听，关闭为false
+#    async-executor-activate: false
+  main:
+    allow-bean-definition-overriding: true
+    # 开启工作流日志
+#logging:
+#  level:
+#    org.activiti.engine.impl.persistence.entity: debug
+knife4j:
+  contact:
+    name: Hangzhou Fuli software Computer Co., Ltd
+    url: http://www.free-softs.com
+    email: 123456789@qq.com
+  document:
+    groupName: govern-server-tool
+    title: 开发服务文档
+    basePackage: com.freesofts.server.controller
+    version: 1.0.0
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 9000
+        readTimeout: 9000
+        loggerLevel: basic
+  okhttp:
+    enabled: true
+  #  hystrix:
+  #    enabled: true
+  compression:
+    request:
+      enabled: true
+      mime-types: text/xml,application/xml,application/json
+      min-request-size: 2048
+    response:
+      enabled: true
+mybatis:
+  type-aliases-package: com.freesofts.lowcode.model
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    call-setters-on-nulls: true
+    cache-enabled: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

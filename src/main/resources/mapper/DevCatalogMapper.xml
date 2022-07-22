@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.freesofts.lowcode.mapper.DevCatalogMapper">
+
+  <sql id="Base_Column_List">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    id,
+    catalog_name catalogName,
+    catalog_desc catalogDesc,
+    parent_id parentId,
+    catalog_type catalogType,
+    catalog_level catalogLevel,
+    catalog_sort catalogSort,
+    created_by createdBy,
+    created_name createdName,
+    created_date createdDate,
+    last_modified_date lastModifiedDate,
+    last_modified_by lastModifiedBy,
+    last_modified_name lastModifiedName,
+    disable_flag disableFlag, del_flag delFlag
+  </sql>
+
+
+  <!-- 分页列表查询: 条件语句 -->
+  <sql id="pageList_common_where_if">
+
+    <if test="queryVO.catalogName != null">
+      and catalog_name like concat('%', #{queryVO.catalogName}, '%')
+    </if>
+    <if test="queryVO.parentId != null and queryVO.parentId != ''">
+      and parent_id = #{queryVO.parentId}
+    </if>
+    <if test="queryVO.catalogType != null and queryVO.catalogType != 0">
+      and catalog_type = #{queryVO.catalogType}
+    </if>
+
+
+  </sql>
+
+  <!-- 分页列表查询: 满足条件总数 -->
+  <select id="selectTotalCount" resultType="java.lang.Long">
+    select count(id) from dev_catalog
+    <where>
+      del_flag = 0
+      <include refid="pageList_common_where_if" />
+    </where>
+  </select>
+
+  <!-- 分页列表查询: 记录列表 -->
+  <select id="selectPageList" resultType="HashMap">
+    select
+    <include refid="Base_Column_List"/>
+    from dev_catalog
+    <where>
+      del_flag = 0
+      <include refid="pageList_common_where_if" />
+    </where>
+    <if test="pageSize != 0">
+      limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
+  <select id="listNoPage" resultType="java.util.HashMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM
+    dev_catalog
+    <where>
+      del_flag = 0
+      <include refid="pageList_common_where_if" />
+    </where>
+  </select>
+  <select id="selectType" resultType="com.freesofts.lowcode.model.DevCatalog">
+
+    select
+    <include refid="Base_Column_List"/>
+    from
+    dev_catalog
+    <where>
+      del_flag = 0
+      <!--<if test="parentId != null and parentId != ''">-->
+      <!--and parent_id = #{parentId}-->
+      <!--</if>-->
+      <if test="catalogType != null and catalogType != ''">
+        and catalog_type = #{catalogType}
+      </if>
+
+    </where>
+    order by created_date DESC
+
+
+  </select>
+
+
+</mapper>

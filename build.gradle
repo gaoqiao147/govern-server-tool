@@ -1,0 +1,96 @@
+plugins {
+    id 'org.springframework.boot' version '2.1.11.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'java'
+}
+
+repositories {
+    flatDir {  dirs 'libs' }
+}
+
+group = 'com.freesofts'
+version = '2.0.0-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenLocal()
+    maven { url 'http://oa.free-softs.com:8082/nexus/content/repositories/FreeSoftGovernSnapshots' }
+    maven { url 'http://oa.free-softs.com:8082/nexus/content/repositories/FreesoftGovernReleases' }
+    maven { url 'http://oa.free-softs.com:8082/nexus/content/repositories/thirdparty' }
+    maven { url "http://maven.aliyun.com/nexus/content/groups/public/" }
+    mavenCentral()
+}
+
+ext {
+    set("springCloudVersion", "Greenwich.SR6")
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-alibaba-nacos-discovery:0.9.0.RELEASE'
+    implementation 'org.springframework.cloud:spring-cloud-starter-alibaba-nacos-config:0.9.0.RELEASE'
+
+    implementation 'org.springframework.cloud:spring-cloud-starter-oauth2'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    // Database Driver
+    implementation 'com.oracle.ojdbc:ojdbc8:19.3.0.0'
+    implementation 'com.microsoft.sqlserver:sqljdbc4:4.0'
+    implementation 'com.dm:DmJdbcDriver18:1.8'
+
+    // Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.apache.commons:commons-pool2'
+
+    // Kafka
+    implementation 'org.springframework.cloud:spring-cloud-starter-stream-kafka'
+
+    // Application architecture extension package
+    implementation 'com.freesofts.common:gcs-framework-basic:2.0.0-SNAPSHOT'
+    implementation 'com.freesofts.model:gcs-user-model:2.0.0-SNAPSHOT'
+
+    implementation 'com.freesofts.starter:gcs-notification-starter:2.0.0-SNAPSHOT'
+    implementation 'com.freesofts.starter:gcs-files-starter:2.0.0-SNAPSHOT'
+    implementation 'com.freesofts.starter:gcs-logs-starter:2.0.0-SNAPSHOT'
+
+    implementation 'com.freesofts.starter:gcs-document-starter:2.0.0-SNAPSHOT'
+
+    // activity
+//    implementation 'org.activiti:activiti-spring-boot-starter:7.1.0.M4'
+//    implementation 'org.activiti:activiti-image-generator:7.1.0.M4'
+
+
+    //hutool
+    implementation 'cn.hutool:hutool-all:5.7.16'
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    runtimeOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+// Database related configuration
+apply from: './mybatis.gradle'
