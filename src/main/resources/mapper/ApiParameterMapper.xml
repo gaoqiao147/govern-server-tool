@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.freesofts.lowcode.mapper.ApiParameterMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.freesofts.lowcode.model.ApiParameter">
+        <id column="id" property="id" />
+        <result column="api_id" property="apiId" />
+        <result column="key" property="key" />
+        <result column="default_value" property="defaultValue" />
+        <result column="description" property="description" />
+        <result column="required" property="required" />
+        <result column="data_type" property="dataType" />
+        <result column="validate_type" property="validateType" />
+        <result column="error" property="error" />
+        <result column="expression" property="expression" />
+        <result column="sort" property="sort" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, api_id, key, default_value, description, required, data_type, validate_type, error, expression, sort
+    </sql>
+    <insert id="saveApiParams" parameterType="java.util.List">
+        insert into api_parameter(id, api_id, `key`, default_value, description, required, data_type, validate_type,
+        `error`, `expression`, `sort`) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id}, #{item.apiId}, #{item.key}, #{item.defaultValue}, #{item.description}, #{item.required},
+            #{item.dataType}, #{item.validateType}, #{item.error}, #{item.expression}, #{item.sort})
+        </foreach>
+    </insert>
+
+    <insert id="saveApiParamsOut">
+        insert into api_params(id,api_id,`key`,data_type) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id},#{item.apiId},#{item.key},#{item.dataType})
+        </foreach>
+    </insert>
+    <select id="paramsList" resultType="com.freesofts.lowcode.vo.params.ParamsVO">
+        select `key` as params
+        from api_params
+        where api_id = #{apiId}
+    </select>
+    <select id="paramsDataTypeList" resultType="com.freesofts.lowcode.vo.params.DataTypeVO">
+        select data_type as paramsDataType
+        from api_parameter
+        where api_id = #{apiId}
+    </select>
+    <select id="paramsList2" resultType="com.freesofts.lowcode.vo.params.ParamsVO">
+        select `key` as params
+        from api_parameter
+        where api_id = #{apiId}
+    </select>
+</mapper>

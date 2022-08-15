@@ -61,6 +61,7 @@
       limit #{pageStart}, #{pageSize}
     </if>
   </select>
+
   <select id="listNoPage" resultType="java.util.HashMap">
     SELECT
     <include refid="Base_Column_List"/>
@@ -71,6 +72,7 @@
       <include refid="pageList_common_where_if" />
     </where>
   </select>
+
   <select id="selectType" resultType="com.freesofts.lowcode.model.DevCatalog">
 
     select

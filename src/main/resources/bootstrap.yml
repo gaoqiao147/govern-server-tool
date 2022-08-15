@@ -44,6 +44,7 @@ spring:
 #    async-executor-activate: false
   main:
     allow-bean-definition-overriding: true
+
     # 开启工作流日志
 #logging:
 #  level:

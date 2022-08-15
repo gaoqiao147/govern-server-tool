@@ -38,93 +38,80 @@ import java.util.List;
 @RestController
 @RequestMapping("/catalog")
 public class DevCatalogController {
-	
-	@Resource
-	private DevCatalogService catalogService;
+    @Resource
+    private DevCatalogService catalogService;
 
+    @PostMapping
+    //	@PreAuthorize("hasAuthority('developer:flow:flow_button:insert')")
+    @LogAnnotation(module = "新增")
+    @ApiOperation(value = "新增", httpMethod = "POST")
+    public BizResponseData<?> insert(
+            @ApiParam(value = "数据对象", required = true) @RequestBody @Validated DevCatalog catalog
+    ) {
+        int result = catalogService.insert(catalog);
+        return IntegerBizResult.builder().value(result).build().beEqualTo(1);
+    }
 
-	@PostMapping
-//	@PreAuthorize("hasAuthority('developer:flow:flow_button:insert')")
-	@LogAnnotation(module = "新增")
-	@ApiOperation(value = "新增", httpMethod = "POST")
-	public BizResponseData<?> insert(
-			@ApiParam(value = "数据对象", required = true) @RequestBody @Validated DevCatalog catalog
-	) {
-		int result = catalogService.insert(catalog);
-		return IntegerBizResult.builder().value(result).build().beEqualTo(1);
-	}
+    @PutMapping("/{id}")
+    //	@PreAuthorize("hasAuthority('developer:flow:flow_button:update')")
+    @LogAnnotation(module = "修改")
+    @ApiOperation(value = "修改", httpMethod = "PUT")
+    public BizResponseData<?> update(
+            @ApiParam(value = "数据ID", required = true) @PathVariable String id,
+            @ApiParam(value = "数据对象", required = true) @RequestBody @Validated DevCatalog catalog
+    ) {
+        int result = catalogService.update(id, catalog);
+        return IntegerBizResult.builder().value(result).build().beEqualTo(1);
+    }
 
+    @DeleteMapping
+    //	@PreAuthorize("hasAuthority('developer:flow:flow_button:delete')")
+    @LogAnnotation(module = "删除")
+    @ApiOperation(value = "删除", httpMethod = "DELETE")
+    public BizResponseData<?> deleteByIds(@ApiParam(value = "数据ID集合", required = true) @RequestBody List<String> ids) {
+        int result = catalogService.deleteByIds(ids);
+        return IntegerBizResult.builder().value(result).build().greaterThan(-1);
+    }
 
-	@PutMapping("/{id}")
-//	@PreAuthorize("hasAuthority('developer:flow:flow_button:update')")
-	@LogAnnotation(module = "修改")
-	@ApiOperation(value = "修改", httpMethod = "PUT")
-	public BizResponseData<?> update(
-			@ApiParam(value = "数据ID", required = true) @PathVariable String id,
-			@ApiParam(value = "数据对象", required = true) @RequestBody @Validated DevCatalog catalog
-	) {
+    @GetMapping("/list/{pageSize}/{pageNum}")
+    //	@PreAuthorize("hasAuthority('developer:flow:flow_button:access')")
+    @ApiOperation(value = "数据分页列表", httpMethod = "GET")
+    public BizResponseData<Datagrid<HashMap>> list(
+            @ApiParam(value = "数据页码", required = true) @PathVariable int pageNum,
+            @ApiParam(value = "每页记录数", required = true) @PathVariable int pageSize,
+            @ApiParam(value = "查询参数", required = true) CatalogQueryVO queryVO
+    ) {
+        List<HashMap> list = catalogService.list(pageNum, pageSize, queryVO);
+        Long total = catalogService.totalCount(queryVO);
+        return new DatagridBizResult<>(total, list).getResponseData();
+    }
 
-		int result = catalogService.update(id, catalog);
-		return IntegerBizResult.builder().value(result).build().beEqualTo(1);
-	}
+    @GetMapping("/list")
+    //	@PreAuthorize("hasAuthority('developer:flow:flow_button:access')")
+    @ApiOperation(value = "数据列表", httpMethod = "GET")
+    public BizResponseData<Datagrid<HashMap>> listNoPage(
+            @ApiParam(value = "查询参数", required = true) CatalogQueryVO queryVO
+    ) {
+        List<HashMap> list = catalogService.listNoPage(queryVO);
+        return new DatagridBizResult<>(CollectionUtils.isEmpty(list) ? 0 : list.size(), list).getResponseData();
+    }
 
+    @GetMapping("/{id}")
+    //	@PreAuthorize("hasAuthority('developer:flow:flow_button:access')")
+    @ApiOperation(value = "详情", httpMethod = "GET")
+    public BizResponseData<?> detail(
+            @ApiParam(value = "数据id", required = true) @PathVariable String id
+    ) {
+        DevCatalog result = catalogService.detail(id);
+        return ObjectBizResult.builder().object(result).build().nonNull();
+    }
 
-	@DeleteMapping
-//	@PreAuthorize("hasAuthority('developer:flow:flow_button:delete')")
-	@LogAnnotation(module = "删除")
-	@ApiOperation(value = "删除", httpMethod = "DELETE")
-	public BizResponseData<?> deleteByIds(@ApiParam(value = "数据ID集合", required = true) @RequestBody List<String> ids) {
-		int result = catalogService.deleteByIds(ids);
-		return IntegerBizResult.builder().value(result).build().greaterThan(-1);
-	}
-
-
-	@GetMapping("/list/{pageSize}/{pageNum}")
-//	@PreAuthorize("hasAuthority('developer:flow:flow_button:access')")
-	@ApiOperation(value = "数据分页列表", httpMethod = "GET")
-	public BizResponseData<Datagrid<HashMap>> list(
-			@ApiParam(value = "数据页码", required = true) @PathVariable int pageNum,
-			@ApiParam(value = "每页记录数", required = true) @PathVariable int pageSize,
-			@ApiParam(value = "查询参数", required = true) CatalogQueryVO queryVO
-	) {
-
-		List<HashMap> list = catalogService.list(pageNum, pageSize, queryVO);
-		Long total = catalogService.totalCount(queryVO);
-		return new DatagridBizResult<>(total, list).getResponseData();
-	}
-
-
-	@GetMapping("/list")
-	@PreAuthorize("hasAuthority('developer:flow:flow_button:access')")
-	@ApiOperation(value = "数据列表", httpMethod = "GET")
-	public BizResponseData<Datagrid<HashMap>> listNoPage(
-			@ApiParam(value = "查询参数", required = true) CatalogQueryVO queryVO
-	) {
-
-		List<HashMap> list = catalogService.listNoPage(queryVO);
-		return new DatagridBizResult<>(CollectionUtils.isEmpty(list) ? 0 : list.size(), list).getResponseData();
-	}
-
-	@GetMapping("/{id}")
-//	@PreAuthorize("hasAuthority('developer:flow:flow_button:access')")
-	@ApiOperation(value = "详情", httpMethod = "GET")
-	public BizResponseData<?> detail(
-			@ApiParam(value = "数据id", required = true) @PathVariable String id
-	) {
-
-		DevCatalog result = catalogService.detail(id);
-		return ObjectBizResult.builder().object(result).build().nonNull();
-	}
-
-	@GetMapping("/tree/data/{catalogType}")
-//	@PreAuthorize("hasAuthority('developer:flow:flow_button:access')")
-	@ApiOperation(value = "目录树", httpMethod = "GET")
-	public BizResponseData<?> selectTreeByType(
-			@ApiParam(value = "catalogType", required = true) @PathVariable String catalogType
-	) {
-
-		return ObjectBizResult.builder().object(catalogService.selectTreeByType(catalogType)).build().nonNull();
-	}
-	
-	
+    @GetMapping("/tree/data/{catalogType}")
+    //	@PreAuthorize("hasAuthority('developer:flow:flow_button:access')")
+    @ApiOperation(value = "目录树", httpMethod = "GET")
+    public BizResponseData<?> selectTreeByType(
+            @ApiParam(value = "catalogType", required = true) @PathVariable String catalogType
+    ) {
+        return ObjectBizResult.builder().object(catalogService.selectTreeByType(catalogType)).build().nonNull();
+    }
 }

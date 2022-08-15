@@ -1,4 +1,4 @@
-package com.freesofts.lowcode.common.utils;
+package com.freesofts.lowcode.utils;
 
 
 import java.util.regex.Matcher;

@@ -18,16 +18,16 @@ import java.util.UUID;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class ExtensionBasicEntity extends BasicEntity {
-
-    /**
-     * 是否删除
-     */
-    private Integer delFlag;
-
-    /**
-     * 是否作废
-     */
-    private Integer disableFlag;
+//
+//    /**
+//     * 是否删除
+//     */
+//    private Integer delFlag;
+//
+//    /**
+//     * 是否作废
+//     */
+//    private Integer disableFlag;
 
 
 
@@ -58,8 +58,8 @@ public class ExtensionBasicEntity extends BasicEntity {
         if (null == this.getLastModifiedDate()){
             this.setLastModifiedDate(new Date());
         }
-        this.setDelFlag(CommonFlagEnum.NO.getFlag());
-        this.setDisableFlag(CommonFlagEnum.NO.getFlag());
+//        this.setDelFlag(CommonFlagEnum.NO.getFlag());
+//        this.setDisableFlag(CommonFlagEnum.NO.getFlag());
     }
 
     /**
@@ -82,7 +82,7 @@ public class ExtensionBasicEntity extends BasicEntity {
         this.setLastModifiedName(CommonService.getUserDetail().getUsername());
 //        this.setLastModifiedBy("1");
 //        this.setLastModifiedName("admin");
-        this.setLastModifiedDate(new Date());
-        this.setDelFlag(CommonFlagEnum.YES.getFlag());
+//        this.setLastModifiedDate(new Date());
+//        this.setDelFlag(CommonFlagEnum.YES.getFlag());
     }
 }
