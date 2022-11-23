@@ -38,6 +38,7 @@ public class ApiLogController {
         return new DatagridBizResult<ApiLog>(CollectionUtils.isEmpty(list) ? 0 : list.size(), list).getResponseData();
     }
 
+
     @GetMapping("/get-log-id")
     @ApiOperation(value = "根据id查询日志")
     public BizResponseData<?> getLogById(@ApiParam(value = "日志id") @PathVariable String id){
